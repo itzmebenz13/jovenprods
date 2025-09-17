@@ -401,19 +401,8 @@
         <!-- About Me Section -->
         <section id="about" class="py-20 lg:py-32 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
-                    <div class="relative" data-aos="fade-right">
-                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl h-[500px] lg:h-[600px] shadow-2xl flex items-center justify-center">
-                            <div class="text-center text-white">
-                                <div class="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <i data-feather="user" class="h-12 w-12"></i>
-                                </div>
-                                <h3 class="text-2xl font-serif font-medium">Joven Campomanes</h3>
-                                <p class="text-white/80 mt-2">Creative Developer & Music Producer</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div data-aos="fade-left" data-aos-delay="200">
+                <div class="max-w-4xl mx-auto text-center">
+                    <div data-aos="fade-up">
                         <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold uppercase tracking-wider rounded-full mb-4">About Me</span>
                         <h2 class="text-4xl md:text-5xl font-serif mb-6 leading-tight">
                             A <span class="gradient-text">creative mind</span> exploring the digital world.
@@ -429,7 +418,7 @@
                                 This portfolio is more than just a showcase—it's a reflection of my growth as a creator and my commitment to continuous learning in both music and technology.
                            </p>
                         </div>
-                        <div class="mt-8 flex flex-wrap gap-3">
+                        <div class="mt-8 flex flex-wrap justify-center gap-3">
                             <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full">
                                 <i data-feather="headphones" class="h-4 w-4 text-indigo-600"></i>
                                 <span class="text-sm font-medium">Music Producer</span>
@@ -516,47 +505,30 @@
                 
                 <div class="grid gap-8 lg:gap-12">
                     <!-- Featured Project -->
-                    <div class="project-card p-8 lg:p-12" data-aos="fade-up">
-                        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                            <div class="order-2 lg:order-1">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full">Featured</span>
-                                    <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Mobile App</span>
-                                </div>
-                                <h3 class="text-3xl font-serif font-medium mb-4">Zentro App</h3>
-                                <p class="text-gray-600 mb-6 text-lg leading-relaxed">
-                                    A comprehensive mobile application built with React Native and Expo. Features include user authentication, real-time data synchronization, and a modern, intuitive interface designed for optimal user experience.
-                                </p>
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    <span class="skill-tag">React Native</span>
-                                    <span class="skill-tag">Expo</span>
-                                    <span class="skill-tag">JavaScript</span>
-                                    <span class="skill-tag">Firebase</span>
-                                </div>
-                                <div class="flex gap-4">
-                                    <a href="https://expo.dev/artifacts/eas/7EknGR64hZA25pnxjPs3Kr.apk" target="_blank" rel="noopener noreferrer" class="btn-zentro">
-                                        <i data-feather="download" class="h-4 w-4"></i>
-                                        Download APK
-                                    </a>
-                                    <a href="#" class="btn-secondary">
-                                        <i data-feather="github" class="h-4 w-4"></i>
-                                        View Code
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="order-1 lg:order-2">
-                                <div class="relative">
-                                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl h-[400px] shadow-2xl flex items-center justify-center">
-                                        <div class="text-center text-white">
-                                            <div class="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                                <i data-feather="smartphone" class="h-10 w-10"></i>
-                                            </div>
-                                            <h3 class="text-2xl font-serif font-medium">Zentro App</h3>
-                                            <p class="text-white/80 mt-2">React Native Mobile Application</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="project-card p-8 lg:p-12 text-center" data-aos="fade-up">
+                        <div class="flex items-center justify-center gap-2 mb-4">
+                            <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full">Featured</span>
+                            <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Mobile App</span>
+                        </div>
+                        <h3 class="text-3xl font-serif font-medium mb-4">Zentro App</h3>
+                        <p class="text-gray-600 mb-6 text-lg leading-relaxed max-w-2xl mx-auto">
+                            A comprehensive mobile application built with React Native and Expo. Features include user authentication, real-time data synchronization, and a modern, intuitive interface designed for optimal user experience.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-2 mb-6">
+                            <span class="skill-tag">React Native</span>
+                            <span class="skill-tag">Expo</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">Firebase</span>
+                        </div>
+                        <div class="flex justify-center gap-4">
+                            <a href="https://expo.dev/artifacts/eas/7EknGR64hZA25pnxjPs3Kr.apk" target="_blank" rel="noopener noreferrer" class="btn-zentro">
+                                <i data-feather="download" class="h-4 w-4"></i>
+                                Download APK
+                            </a>
+                            <a href="#" class="btn-secondary">
+                                <i data-feather="github" class="h-4 w-4"></i>
+                                View Code
+                            </a>
                         </div>
                     </div>
                     
@@ -564,14 +536,6 @@
                     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Music Project 1 -->
                         <div class="project-card p-6" data-aos="fade-up" data-aos-delay="100">
-                            <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg h-48 mb-6 flex items-center justify-center">
-                                <div class="text-center text-white">
-                                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                                        <i data-feather="headphones" class="h-8 w-8"></i>
-                                    </div>
-                                    <h4 class="font-serif font-medium">Midnight Drive</h4>
-                                </div>
-                            </div>
                             <div class="flex items-center gap-2 mb-3">
                                 <i data-feather="music" class="h-4 w-4 text-amber-600"></i>
                                 <span class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Music</span>
@@ -585,14 +549,6 @@
                         
                         <!-- Web Project -->
                         <div class="project-card p-6" data-aos="fade-up" data-aos-delay="200">
-                            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg h-48 mb-6 flex items-center justify-center">
-                                <div class="text-center text-white">
-                                    <div class="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
-                                        <i data-feather="check-square" class="h-8 w-8"></i>
-                                    </div>
-                                    <h4 class="font-serif font-medium">Task Manager</h4>
-                                </div>
-                            </div>
                             <div class="flex items-center gap-2 mb-3">
                                 <i data-feather="code" class="h-4 w-4 text-indigo-600"></i>
                                 <span class="text-xs font-semibold text-indigo-800 uppercase tracking-wider">Web App</span>
@@ -606,14 +562,6 @@
                         
                         <!-- Music Project 2 -->
                         <div class="project-card p-6" data-aos="fade-up" data-aos-delay="300">
-                            <div class="bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg h-48 mb-6 flex items-center justify-center">
-                                <div class="text-center text-white">
-                                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                                        <i data-feather="radio" class="h-8 w-8"></i>
-                                    </div>
-                                    <h4 class="font-serif font-medium">City Lights</h4>
-                                </div>
-                            </div>
                             <div class="flex items-center gap-2 mb-3">
                                 <i data-feather="music" class="h-4 w-4 text-pink-600"></i>
                                 <span class="text-xs font-semibold text-pink-800 uppercase tracking-wider">Music</span>
