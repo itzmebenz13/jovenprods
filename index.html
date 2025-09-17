@@ -3,136 +3,472 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joven Campomanes - Projects</title>
+    <title>Joven Campomanes - Creative Developer & Music Producer</title>
+    <meta name="description" content="Student, developer, and music producer from the Philippines. Exploring the intersection of technology and creativity through web development and music production.">
+    <meta name="keywords" content="Joven Campomanes, web developer, music producer, FL Studio, portfolio">
+    <meta name="author" content="Joven Campomanes">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jovencampomanes.com/">
+    <meta property="og:title" content="Joven Campomanes - Creative Developer & Music Producer">
+    <meta property="og:description" content="Student, developer, and music producer from the Philippines. Exploring the intersection of technology and creativity.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://jovencampomanes.com/">
+    <meta property="twitter:title" content="Joven Campomanes - Creative Developer & Music Producer">
+    <meta property="twitter:description" content="Student, developer, and music producer from the Philippines.">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #111111;
+            --secondary-color: #6366f1;
+            --accent-color: #f59e0b;
+            --bg-primary: #fafafa;
+            --bg-secondary: #ffffff;
+            --text-primary: #111111;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8f8f8;
-            color: #111111;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
         }
+
         .font-serif {
-            font-family: 'Lora', serif;
+            font-family: 'Playfair Display', serif;
         }
+
         .bg-dark {
-            background-color: #111111;
+            background-color: var(--primary-color);
         }
+
         .text-light {
             color: #f8f8f8;
         }
-        /* Animation Classes */
-        [data-animate] {
+
+        /* Enhanced Animations */
+        .fade-in-up {
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        [data-animate].visible {
+
+        .fade-in-up.aos-animate {
             opacity: 1;
             transform: translateY(0);
         }
-        .project-card-image {
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .group:hover .project-card-image {
+
+        .fade-in-left.aos-animate {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .fade-in-right.aos-animate {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Project Cards */
+        .project-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid var(--border-color);
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-card-image {
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            aspect-ratio: 16/10;
+            object-fit: cover;
+        }
+
+        .project-card:hover .project-card-image {
             transform: scale(1.05);
         }
+
+        /* Enhanced Link Styles */
         .link-underline {
             position: relative;
             display: inline-block;
+            transition: color 0.3s ease;
         }
+
         .link-underline::after {
             content: '';
             position: absolute;
             width: 100%;
             transform: scaleX(0);
-            height: 1px;
+            height: 2px;
             bottom: -2px;
             left: 0;
-            background-color: #111111;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
             transform-origin: bottom right;
-            transition: transform 0.3s ease-out;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+
         .link-underline:hover::after {
             transform: scaleX(1);
             transform-origin: bottom left;
         }
+
+        /* Header Enhancements */
+        #header {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
         #header.scrolled {
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Button Enhancements */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #374151);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary-color), #8b5cf6);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Skills Section */
+        .skill-tag {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--secondary-color);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #4f46e5, #d97706);
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .project-card:hover {
+                transform: none;
+            }
+            
+            .btn-primary, .btn-secondary {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body class="antialiased">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loader"></div>
+    </div>
 
     <!-- Header & Navigation -->
     <header class="w-full fixed top-0 left-0 z-50 transition-all duration-300" id="header">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <nav class="flex items-center justify-between h-16">
-                <a href="#hero" class="text-xl font-bold tracking-tighter font-serif">JC</a>
+                <a href="#hero" class="text-xl font-bold tracking-tighter font-serif hover:opacity-80 transition-opacity">
+                    JC
+                </a>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#about" class="text-sm font-medium link-underline">About</a>
-                    <a href="#projects" class="text-sm font-medium link-underline">Projects</a>
-                    <a href="#contact" class="text-sm font-medium link-underline">Contact</a>
+                    <a href="#about" class="text-sm font-medium link-underline" aria-label="About section">About</a>
+                    <a href="#skills" class="text-sm font-medium link-underline" aria-label="Skills section">Skills</a>
+                    <a href="#projects" class="text-sm font-medium link-underline" aria-label="Projects section">Projects</a>
+                    <a href="#contact" class="text-sm font-medium link-underline" aria-label="Contact section">Contact</a>
                 </div>
                 <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+                    <button id="mobile-menu-button" class="text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 p-2 rounded-md" aria-label="Open mobile menu">
                         <i data-feather="menu" class="h-6 w-6"></i>
                     </button>
                 </div>
             </nav>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white/90 backdrop-blur-sm">
-            <a href="#about" class="block py-2 px-4 text-sm hover:bg-gray-100">About</a>
-            <a href="#projects" class="block py-2 px-4 text-sm hover:bg-gray-100">Projects</a>
-            <a href="#contact" class="block py-2 px-4 text-sm hover:bg-gray-100">Contact</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-sm border-t border-gray-200">
+            <div class="px-4 py-2 space-y-1">
+                <a href="#about" class="block py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">About</a>
+                <a href="#skills" class="block py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">Skills</a>
+                <a href="#projects" class="block py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">Projects</a>
+                <a href="#contact" class="block py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">Contact</a>
+            </div>
         </div>
     </header>
 
     <main>
         <!-- Hero Section -->
-        <section id="hero" class="pt-32 pb-16 md:pt-40 md:pb-24 bg-[#f8f8f8]">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-left">
-                <div class="max-w-3xl">
-                    <h1 class="text-4xl md:text-6xl font-serif font-medium tracking-tight leading-tight mb-4" data-animate>
-                        Joven Campomanes
+        <section id="hero" class="pt-32 pb-20 md:pt-40 md:pb-32 bg-gradient-to-br from-[#fafafa] to-[#f0f0f0] relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-5">
+                <div class="absolute top-10 left-10 w-20 h-20 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur-xl"></div>
+                <div class="absolute top-40 right-20 w-32 h-32 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full blur-xl"></div>
+                <div class="absolute bottom-20 left-1/4 w-24 h-24 bg-gradient-to-r from-pink-500 to-red-600 rounded-full blur-xl"></div>
+            </div>
+            
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-left relative z-10">
+                <div class="max-w-4xl">
+                    <div class="inline-flex items-center px-4 py-2 bg-white/50 backdrop-blur-sm rounded-full text-sm font-medium text-gray-700 mb-6" data-aos="fade-up">
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                        Available for projects
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-medium tracking-tight leading-tight mb-6" data-aos="fade-up" data-aos-delay="100">
+                        <span class="block">Joven</span>
+                        <span class="block gradient-text">Campomanes</span>
                     </h1>
-                    <p class="max-w-xl text-base md:text-lg text-gray-600 mb-8" data-animate style="transition-delay: 150ms;">
-                        Student based in Dumingag, Zamboanga del Sur. I make music in FL Studio and build web projects for fun.
+                    
+                    <p class="max-w-2xl text-lg md:text-xl text-gray-600 mb-10 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+                        Student, developer, and music producer from the Philippines. I create digital experiences through code and craft atmospheric sounds through music production.
                     </p>
-                    <div class="flex items-center gap-3" data-animate style="transition-delay: 300ms;">
-                        <a href="#projects" class="inline-block bg-dark text-light px-6 py-2.5 text-sm rounded-md font-semibold hover:bg-gray-800 transition-colors duration-300 transform hover:-translate-y-0.5">My Projects</a>
-                        <a href="https://expo.dev/artifacts/eas/7EknGR64hZA25pnxjPs3Kr.apk" rel="noopener noreferrer" class="inline-block bg-[#009D90] text-white px-6 py-2.5 text-sm rounded-md font-semibold hover:bg-opacity-90 transition-all duration-300 transform hover:-translate-y-0.5">
-                            Zentro App <i data-feather="download" class="inline-block h-4 w-4 ml-1 -mt-0.5"></i>
+                    
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8" data-aos="fade-up" data-aos-delay="300">
+                        <a href="#projects" class="btn-primary">
+                            <i data-feather="folder" class="h-4 w-4"></i>
+                            View My Work
                         </a>
+                        <a href="https://expo.dev/artifacts/eas/7EknGR64hZA25pnxjPs3Kr.apk" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                            <i data-feather="download" class="h-4 w-4"></i>
+                            Download Zentro App
+                        </a>
+                    </div>
+                    
+                    <div class="flex items-center gap-6 text-sm text-gray-500" data-aos="fade-up" data-aos-delay="400">
+                        <div class="flex items-center gap-2">
+                            <i data-feather="map-pin" class="h-4 w-4"></i>
+                            Dumingag, Zamboanga del Sur
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-feather="clock" class="h-4 w-4"></i>
+                            GMT+8
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- About Me Section -->
-        <section id="about" class="py-16 lg:py-28 bg-white">
+        <section id="about" class="py-20 lg:py-32 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div data-animate>
-                        <img src="https://placehold.co/800x1000/111111/FFFFFF?text=JC" alt="Joven Campomanes Portrait" class="rounded-lg object-cover w-full h-full">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div class="relative" data-aos="fade-right">
+                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 rounded-2xl transform rotate-3"></div>
+                        <img src="https://placehold.co/800x1000/6366f1/FFFFFF?text=JC" alt="Joven Campomanes Portrait" class="relative rounded-2xl object-cover w-full h-[500px] lg:h-[600px] shadow-2xl">
                     </div>
-                    <div data-animate style="transition-delay: 150ms;">
-                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500">About Me</span>
-                        <h2 class="text-3xl md:text-4xl font-serif mt-3 mb-5">A student who likes to create.</h2>
-                        <div class="text-gray-600 space-y-4 text-base">
+                    <div data-aos="fade-left" data-aos-delay="200">
+                        <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold uppercase tracking-wider rounded-full mb-4">About Me</span>
+                        <h2 class="text-4xl md:text-5xl font-serif mb-6 leading-tight">
+                            A <span class="gradient-text">creative mind</span> exploring the digital world.
+                        </h2>
+                        <div class="text-gray-600 space-y-6 text-lg leading-relaxed">
                            <p>
-                               My name is Joven, and I'm a student from the Philippines. When I'm not busy with school, I split my free time between two hobbies: producing music and coding.
+                               Hi, I'm Joven! I'm a passionate student from the Philippines who finds joy in the intersection of technology and creativity. My journey spans across web development and music production, two worlds that might seem different but share the same creative essence.
                            </p>
                            <p>
-                                I use FL Studio to make beats and compose tracks. Separately, I enjoy building small websites and apps to learn new things. This website is just a simple place for me to share some of the things I've made.
+                                When I'm not immersed in coursework, you'll find me crafting beats in FL Studio or building digital experiences with code. Each project is an opportunity to learn something new and push the boundaries of what I can create.
                            </p>
+                           <p>
+                                This portfolio is more than just a showcase—it's a reflection of my growth as a creator and my commitment to continuous learning in both music and technology.
+                           </p>
+                        </div>
+                        <div class="mt-8 flex flex-wrap gap-3">
+                            <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full">
+                                <i data-feather="headphones" class="h-4 w-4 text-indigo-600"></i>
+                                <span class="text-sm font-medium">Music Producer</span>
+                            </div>
+                            <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full">
+                                <i data-feather="code" class="h-4 w-4 text-indigo-600"></i>
+                                <span class="text-sm font-medium">Web Developer</span>
+                            </div>
+                            <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full">
+                                <i data-feather="book-open" class="h-4 w-4 text-indigo-600"></i>
+                                <span class="text-sm font-medium">Student</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-20 lg:py-32 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold uppercase tracking-wider rounded-full mb-4">Skills & Tools</span>
+                    <h2 class="text-4xl md:text-5xl font-serif mb-6">What I work with</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                        A collection of technologies and tools I use to bring ideas to life, both in code and music.
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-12">
+                    <!-- Development Skills -->
+                    <div data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-4">
+                                <i data-feather="code" class="h-6 w-6 text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-serif font-medium">Development</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="skill-tag">HTML/CSS</div>
+                            <div class="skill-tag">JavaScript</div>
+                            <div class="skill-tag">React</div>
+                            <div class="skill-tag">Node.js</div>
+                            <div class="skill-tag">Python</div>
+                            <div class="skill-tag">Git</div>
+                            <div class="skill-tag">Tailwind CSS</div>
+                            <div class="skill-tag">MongoDB</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Music Production Skills -->
+                    <div data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex items-center mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center mr-4">
+                                <i data-feather="music" class="h-6 w-6 text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-serif font-medium">Music Production</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="skill-tag">FL Studio</div>
+                            <div class="skill-tag">Mixing</div>
+                            <div class="skill-tag">Mastering</div>
+                            <div class="skill-tag">Beat Making</div>
+                            <div class="skill-tag">Composition</div>
+                            <div class="skill-tag">Sound Design</div>
+                            <div class="skill-tag">Lo-fi Hip Hop</div>
+                            <div class="skill-tag">Synthwave</div>
                         </div>
                     </div>
                 </div>
@@ -290,4 +626,3 @@
     </script>
 </body>
 </html>
-
