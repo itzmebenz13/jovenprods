@@ -109,6 +109,37 @@
 <!-- 🎉 Original Dog GIF -->
 <img src="https://media.tenor.com/5Yi3hrIuVLIAAAAM/dog-funny.gif" width="450" alt="Funny Dog GIF">
 
+<!-- 🐶 Extra Funny GIFs -->
+<div class="gif-row">
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu3WF2yZwKWTQiKokGFOpOFWgQXoICaFPO0d_RdyMr6w&s=10" alt="Extra Funny GIF 1">
+  <img src="https://i.pinimg.com/originals/b8/6f/0e/b86f0e859c792c3adc32321e43e3141c.gif" alt="Extra Funny GIF 2">
+  <img src="https://media.tenor.com/OrMhTRpROOQAAAAM/merry-christmas-funny.gif" alt="Extra Funny GIF 3">
+</div>
+
+<marquee direction="right" scrollamount="25">SHOUT OUT DIAY KO SA AKOANG LANGGA. LANGGA PAGKAON NA DIHA, DI KO GUSTO MAGUTMAN KA. - NAGMAMAHAL, JOELO 💋</marquee>
+
+<script>
+// 🔒 Disable right-click
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// 📱 Disable long-press (mobile)
+document.addEventListener("touchstart", e => {
+  clearTimeout(window.longPressTimer);
+  window.longPressTimer = setTimeout(() => e.preventDefault(), 600);
+});
+document.addEventListener("touchend", () => clearTimeout(window.longPressTimer));
+
+// 🔐 Extra: Block F12 & Inspect shortcut
+document.addEventListener("keydown", e => {
+  if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === "I")) {
+    e.preventDefault();
+  }
+});
+</script>
+
+</body>
+</html>
+
 <!-- 🐶 New GIFs -->
 <div class="gif-row">
   <img src="https://i.pinimg.com/originals/b8/6f/0e/b86f0e859c792c3adc32321e43e3141c.gif" alt="Funny Meme GIF">
