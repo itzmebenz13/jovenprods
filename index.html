@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>🤢 Cursed HTML Page</title>
+<title>😂 LOW BUDGET MODE</title>
 <style>
   body {
     background: repeating-linear-gradient(
@@ -16,18 +16,13 @@
     font-family: "Comic Sans MS", cursive;
     text-align: center;
     overflow-x: hidden;
+    user-select: none;
   }
 
   h1 {
     font-size: 60px;
     text-shadow: 5px 5px red;
-    animation: spin 3s linear infinite;
-    transform: skewY(10deg);
-  }
-
-  @keyframes spin {
-    from { transform: rotate(0deg) scale(1); }
-    to { transform: rotate(360deg) scale(1.2); }
+    margin-top: 40px;
   }
 
   h2 {
@@ -44,7 +39,6 @@
   }
 
   button {
-    background: rainbow;
     background: linear-gradient(90deg, red, orange, yellow, green, blue, violet);
     color: black;
     font-size: 35px;
@@ -54,6 +48,7 @@
     cursor: pointer;
     text-transform: uppercase;
     animation: blink 0.6s infinite alternate;
+    width: 90%;
   }
 
   @keyframes blink {
@@ -63,18 +58,18 @@
 
   img {
     display: block;
-    margin: 40px auto;
+    margin: 50px auto;
     border: 30px double red;
     animation: dance 2s infinite linear;
     filter: hue-rotate(180deg) contrast(200%);
   }
 
   @keyframes dance {
-    0% { transform: rotate(0deg) scale(1); }
-    25% { transform: rotate(15deg) scale(1.2); }
-    50% { transform: rotate(-15deg) scale(1); }
-    75% { transform: rotate(15deg) scale(1.1); }
-    100% { transform: rotate(0deg) scale(1); }
+    0% { transform: scale(1); }
+    25% { transform: scale(1.2); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
   }
 
   marquee {
@@ -87,21 +82,32 @@
   }
 </style>
 </head>
-<body>
+<body oncontextmenu="return false">
 
-<marquee behavior="alternate" scrollamount="15">🔥 WARNING: UGLIEST WEBSITE EVER 🔥</marquee>
-
-<h1>🤯 WA KO SA MOOD RON PARA MAG DESIGN OG PAGE. SENSYA NA 😂</h1>
+<h1>🤣 ATAY LOW BUDGET SA RON, WA KO SA MOOD<br>PARA MAG DESIGN OG PAGE 😂</h1>
 
 <h2>
   <a href="https://app.temu.com/ph-en/kuiper/un1.html?subj=feed-un&_bg_fs=1&_p_mat1_type=3&_p_jump_id=722&_x_vst_scene=adg&goods_id=601101201718631" target="_blank">
-    <button>💩 PINDUTA NI PARA MAKUHA ANG FREE POCO C61 💩</button>
+    <button>💩 PINDUTA LANG NI PARA SA FREE POCO C61 💩</button>
   </a>
 </h2>
 
 <img src="https://media.tenor.com/5Yi3hrIuVLIAAAAM/dog-funny.gif" width="450" alt="Funny Dog GIF">
 
 <marquee direction="right" scrollamount="25">🐶 WOOF WOOF 🐶 MURAG WALA NAG TUON ANG NAG HIMO ANI 🐶</marquee>
+
+<script>
+// 🔒 Disable right-click
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// 📱 Disable long-press (mobile)
+document.addEventListener("touchstart", e => {
+  clearTimeout(window.longPressTimer);
+  window.longPressTimer = setTimeout(() => e.preventDefault(), 600);
+});
+
+document.addEventListener("touchend", () => clearTimeout(window.longPressTimer));
+</script>
 
 </body>
 </html>
