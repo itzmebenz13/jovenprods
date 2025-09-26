@@ -804,12 +804,13 @@
                     <div>
                         <label for="temu-link" class="block text-sm font-medium text-gray-700 mb-2">TEMU Share Link</label>
                         <input 
-                            type="url" 
+                            type="text" 
                             id="temu-link" 
-                            placeholder="https://share.temu.com/..."
+                            placeholder="https://share.temu.com/... or product ID (601101201718631)"
                             class="generator-input"
                             required
                         >
+                        <p class="text-xs text-gray-500 mt-1">Or paste the product ID directly (12+ digits)</p>
                     </div>
                 </div>
                 
@@ -1125,18 +1126,21 @@
         function extractGoodsId(url) {
             // Extract goods_id from various TEMU URL formats
             const patterns = [
-                /goods_id[=:](\d+)/i,
-                /product\/([^/?&]+)/i,
-                /\/(\d{15,})/,
-                /goods[_-]?id[=:]?(\d+)/i
+                /goods_id=([^&]+)/i,           // goods_id=123456789
+                /goods_id:([^&]+)/i,           // goods_id:123456789
+                /\/goods\/([^/?&]+)/i,         // /goods/123456789
+                /product_id=([^&]+)/i,         // product_id=123456789
+                /item_id=([^&]+)/i,            // item_id=123456789
+                /id=([^&]+)/i,                 // id=123456789 (generic)
+                /\/(\d{12,})/                  // Any number with 12+ digits in path
             ];
 
             for (const pattern of patterns) {
                 const match = url.match(pattern);
                 if (match && match[1]) {
-                    // If it's a product code, convert to goods_id format
                     const value = match[1];
-                    if (value.length >= 15) {
+                    // Return if it looks like a valid goods_id (numeric, reasonable length)
+                    if (/^\d{10,}$/.test(value)) {
                         return value;
                     }
                 }
@@ -1157,9 +1161,9 @@
                 return;
             }
 
-            // Validate TEMU link
-            if (!temuLink.includes('temu.com')) {
-                showGeneratorMessage('Please provide a valid TEMU share link.', 'error');
+            // Validate TEMU link or product ID
+            if (!temuLink.includes('temu.com') && !/^\d{12,}$/.test(temuLink)) {
+                showGeneratorMessage('Please provide a valid TEMU share link or product ID (12+ digits).', 'error');
                 return;
             }
 
@@ -1169,31 +1173,82 @@
             hideGeneratorMessage();
 
             try {
-                // Try to resolve redirects first
-                let finalUrl = temuLink;
+                // Check if user entered a direct product ID (just numbers)
+                let goodsId = null;
+                if (/^\d{12,}$/.test(temuLink)) {
+                    goodsId = temuLink;
+                } else {
+                    // First try direct extraction from the original URL
+                    goodsId = extractGoodsId(temuLink);
+                }
                 
-                // Extract goods_id from the URL
-                let goodsId = extractGoodsId(finalUrl);
-                
+                // If direct extraction fails, try different approaches
                 if (!goodsId) {
-                    // If direct extraction fails, try to follow redirects
+                    // Try to follow redirects using a CORS proxy
                     try {
-                        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(temuLink)}`);
-                        const data = await response.json();
-                        if (data.contents) {
-                            // Look for goods_id in the response
-                            const goodsIdMatch = data.contents.match(/goods_id[=:](\d+)/i);
-                            if (goodsIdMatch) {
-                                goodsId = goodsIdMatch[1];
+                        const corsProxies = [
+                            `https://api.allorigins.win/get?url=${encodeURIComponent(temuLink)}`,
+                            `https://corsproxy.io/?${encodeURIComponent(temuLink)}`,
+                            `https://cors-anywhere.herokuapp.com/${temuLink}`
+                        ];
+
+                        for (const proxyUrl of corsProxies) {
+                            try {
+                                const response = await fetch(proxyUrl);
+                                
+                                if (response.ok) {
+                                    const data = await response.json();
+                                    let content = '';
+                                    
+                                    // Handle different proxy response formats
+                                    if (data.contents) {
+                                        content = data.contents;
+                                    } else if (typeof data === 'string') {
+                                        content = data;
+                                    }
+                                    
+                                    if (content) {
+                                        // Try to extract goods_id from the response
+                                        goodsId = extractGoodsId(content);
+                                        if (goodsId) break;
+                                        
+                                        // Also try to find the final redirect URL
+                                        const urlMatch = content.match(/url[=:]['"]([^'"]+temu\.com[^'"]*)/i);
+                                        if (urlMatch) {
+                                            goodsId = extractGoodsId(urlMatch[1]);
+                                            if (goodsId) break;
+                                        }
+                                    }
+                                }
+                            } catch (proxyError) {
+                                console.log('Proxy failed:', proxyError);
+                                continue;
                             }
                         }
                     } catch (e) {
-                        console.log('Redirect resolution failed, trying direct extraction...');
+                        console.log('Redirect resolution failed:', e);
+                    }
+                }
+
+                // If still no goods_id, try parsing it from common short URL patterns
+                if (!goodsId) {
+                    // Handle share.temu.com or shortened URLs by making a simple fetch to see if we get redirected
+                    try {
+                        const response = await fetch(temuLink, { method: 'HEAD', mode: 'no-cors' });
+                        // This won't work due to CORS, but we can try extracting from the original URL differently
+                    } catch (e) {
+                        // Expected to fail due to CORS
+                    }
+                    
+                    // Try extracting any long number from the URL as a fallback
+                    const numberMatch = temuLink.match(/(\d{12,})/);
+                    if (numberMatch) {
+                        goodsId = numberMatch[1];
                     }
                 }
 
                 if (!goodsId) {
-                    showGeneratorMessage('Could not extract product ID from the TEMU link. Please verify that you\'re using a valid TEMU product share link.', 'error');
+                    showGeneratorMessage('Could not extract product ID from the TEMU link. Please try:\n1. Using the full app.temu.com URL instead of share.temu.com\n2. Or paste the product ID directly if you have it', 'error');
                     return;
                 }
 
