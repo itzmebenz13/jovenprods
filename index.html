@@ -1124,27 +1124,47 @@
         }
 
         function extractGoodsId(url) {
-            // Extract goods_id from various TEMU URL formats
-            const patterns = [
-                /goods_id=([^&]+)/i,           // goods_id=123456789
-                /goods_id:([^&]+)/i,           // goods_id:123456789
-                /\/goods\/([^/?&]+)/i,         // /goods/123456789
-                /product_id=([^&]+)/i,         // product_id=123456789
-                /item_id=([^&]+)/i,            // item_id=123456789
-                /id=([^&]+)/i,                 // id=123456789 (generic)
-                /\/(\d{12,})/                  // Any number with 12+ digits in path
-            ];
-
-            for (const pattern of patterns) {
-                const match = url.match(pattern);
-                if (match && match[1]) {
-                    const value = match[1];
-                    // Return if it looks like a valid goods_id (numeric, reasonable length)
-                    if (/^\d{10,}$/.test(value)) {
-                        return value;
-                    }
+            console.log('Extracting from URL:', url);
+            
+            // Pattern 1: Direct goods_id parameter (most common after redirect)
+            let match = url.match(/goods_id=([^&\s]+)/i);
+            if (match && match[1]) {
+                const goodsId = match[1];
+                console.log('Found goods_id via parameter:', goodsId);
+                if (/^\d{10,}$/.test(goodsId)) {
+                    return goodsId;
                 }
             }
+
+            // Pattern 2: goods_id with colon
+            match = url.match(/goods_id:([^&\s]+)/i);
+            if (match && match[1]) {
+                const goodsId = match[1];
+                console.log('Found goods_id via colon:', goodsId);
+                if (/^\d{10,}$/.test(goodsId)) {
+                    return goodsId;
+                }
+            }
+
+            // Pattern 3: Look for any long number sequence (10+ digits)
+            match = url.match(/(\d{10,})/);
+            if (match && match[1]) {
+                const goodsId = match[1];
+                console.log('Found potential goods_id via long number:', goodsId);
+                return goodsId;
+            }
+
+            // Pattern 4: Check for encoded goods_id
+            match = url.match(/goods[_-]?id[%3D=]([^&\s%]+)/i);
+            if (match && match[1]) {
+                const goodsId = decodeURIComponent(match[1]);
+                console.log('Found goods_id via encoded parameter:', goodsId);
+                if (/^\d{10,}$/.test(goodsId)) {
+                    return goodsId;
+                }
+            }
+
+            console.log('No goods_id found in URL');
             return null;
         }
 
@@ -1162,8 +1182,8 @@
             }
 
             // Validate TEMU link or product ID
-            if (!temuLink.includes('temu.com') && !/^\d{12,}$/.test(temuLink)) {
-                showGeneratorMessage('Please provide a valid TEMU share link or product ID (12+ digits).', 'error');
+            if (!temuLink.includes('temu.com') && !/^\d{10,}$/.test(temuLink.trim())) {
+                showGeneratorMessage('Please provide a valid TEMU share link or product ID (10+ digits).', 'error');
                 return;
             }
 
@@ -1173,82 +1193,49 @@
             hideGeneratorMessage();
 
             try {
-                // Check if user entered a direct product ID (just numbers)
                 let goodsId = null;
-                if (/^\d{12,}$/.test(temuLink)) {
-                    goodsId = temuLink;
-                } else {
-                    // First try direct extraction from the original URL
-                    goodsId = extractGoodsId(temuLink);
-                }
                 
-                // If direct extraction fails, try different approaches
-                if (!goodsId) {
-                    // Try to follow redirects using a CORS proxy
-                    try {
-                        const corsProxies = [
-                            `https://api.allorigins.win/get?url=${encodeURIComponent(temuLink)}`,
-                            `https://corsproxy.io/?${encodeURIComponent(temuLink)}`,
-                            `https://cors-anywhere.herokuapp.com/${temuLink}`
-                        ];
-
-                        for (const proxyUrl of corsProxies) {
-                            try {
-                                const response = await fetch(proxyUrl);
-                                
-                                if (response.ok) {
-                                    const data = await response.json();
-                                    let content = '';
+                console.log('Processing input:', temuLink);
+                
+                // Check if user entered a direct product ID (just numbers)
+                if (/^\d{10,}$/.test(temuLink.trim())) {
+                    goodsId = temuLink.trim();
+                    console.log('Using direct product ID:', goodsId);
+                } else {
+                    // Try to extract from the URL directly
+                    goodsId = extractGoodsId(temuLink);
+                    
+                    // If no goods_id found, try a simple approach with allorigins.win
+                    if (!goodsId) {
+                        console.log('Trying to resolve redirects...');
+                        try {
+                            const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(temuLink)}`);
+                            if (response.ok) {
+                                const data = await response.json();
+                                if (data.contents) {
+                                    console.log('Got redirect content, searching for goods_id...');
+                                    goodsId = extractGoodsId(data.contents);
                                     
-                                    // Handle different proxy response formats
-                                    if (data.contents) {
-                                        content = data.contents;
-                                    } else if (typeof data === 'string') {
-                                        content = data;
-                                    }
-                                    
-                                    if (content) {
-                                        // Try to extract goods_id from the response
-                                        goodsId = extractGoodsId(content);
-                                        if (goodsId) break;
-                                        
-                                        // Also try to find the final redirect URL
-                                        const urlMatch = content.match(/url[=:]['"]([^'"]+temu\.com[^'"]*)/i);
-                                        if (urlMatch) {
-                                            goodsId = extractGoodsId(urlMatch[1]);
-                                            if (goodsId) break;
+                                    // Also look for any TEMU URLs in the content
+                                    if (!goodsId) {
+                                        const urlMatches = data.contents.match(/https?:\/\/[^"'\s]*temu\.com[^"'\s]*/gi);
+                                        if (urlMatches) {
+                                            for (const url of urlMatches) {
+                                                goodsId = extractGoodsId(url);
+                                                if (goodsId) break;
+                                            }
                                         }
                                     }
                                 }
-                            } catch (proxyError) {
-                                console.log('Proxy failed:', proxyError);
-                                continue;
                             }
+                        } catch (e) {
+                            console.log('Redirect resolution failed:', e);
                         }
-                    } catch (e) {
-                        console.log('Redirect resolution failed:', e);
-                    }
-                }
-
-                // If still no goods_id, try parsing it from common short URL patterns
-                if (!goodsId) {
-                    // Handle share.temu.com or shortened URLs by making a simple fetch to see if we get redirected
-                    try {
-                        const response = await fetch(temuLink, { method: 'HEAD', mode: 'no-cors' });
-                        // This won't work due to CORS, but we can try extracting from the original URL differently
-                    } catch (e) {
-                        // Expected to fail due to CORS
-                    }
-                    
-                    // Try extracting any long number from the URL as a fallback
-                    const numberMatch = temuLink.match(/(\d{12,})/);
-                    if (numberMatch) {
-                        goodsId = numberMatch[1];
                     }
                 }
 
                 if (!goodsId) {
-                    showGeneratorMessage('Could not extract product ID from the TEMU link. Please try:\n1. Using the full app.temu.com URL instead of share.temu.com\n2. Or paste the product ID directly if you have it', 'error');
+                    showGeneratorMessage('Could not extract product ID. Please try:\n• Paste the product ID directly (like: 601101201718631)\n• Use a full app.temu.com URL with goods_id parameter\n• Check if the link is valid', 'error');
                     return;
                 }
 
@@ -1256,8 +1243,9 @@
                 const baseUrl = "https://app.temu.com/ph-en/kuiper/un1.html?subj=feed-un&_bg_fs=1&_p_mat1_type=3&_p_jump_id=722&_x_vst_scene=adg&goods_id=";
                 const giftLink = baseUrl + goodsId;
 
-                // Show success message
-                showGeneratorMessage(`Gift link generated successfully! Opening in new tab...`, 'success');
+                // Show success message with product ID for debugging
+                showGeneratorMessage(`Gift link generated successfully for product ${goodsId}! Opening in new tab...`, 'success');
+                console.log('Generated gift link:', giftLink);
 
                 // Open the gift link after a short delay
                 setTimeout(() => {
