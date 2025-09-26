@@ -2,64 +2,106 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>😩 LOW BUDGET PAGE</title>
+<title>🤢 Cursed HTML Page</title>
 <style>
   body {
-    background: lime;
-    font-family: Comic Sans MS, cursive;
+    background: repeating-linear-gradient(
+      45deg,
+      lime,
+      lime 20px,
+      magenta 20px,
+      magenta 40px
+    );
+    color: yellow;
+    font-family: "Comic Sans MS", cursive;
     text-align: center;
-    color: red;
-    margin: 0;
-    padding: 0;
-    animation: blink 0.8s infinite alternate;
+    overflow-x: hidden;
   }
-  @keyframes blink {
-    from { background: lime; }
-    to { background: hotpink; }
-  }
+
   h1 {
-    font-size: 50px;
-    text-shadow: 5px 5px yellow;
-    transform: rotate(-3deg);
+    font-size: 60px;
+    text-shadow: 5px 5px red;
+    animation: spin 3s linear infinite;
+    transform: skewY(10deg);
   }
+
+  @keyframes spin {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1.2); }
+  }
+
   h2 {
-    background: cyan;
+    font-size: 45px;
+    background: linear-gradient(to right, cyan, yellow, orange, pink);
     padding: 20px;
-    border: 5px dashed red;
-    margin: 30px;
-    font-size: 40px;
-    transform: rotate(2deg);
+    border: 10px ridge blue;
+    animation: shake 0.3s infinite alternate;
   }
-  a button {
-    background: yellow;
-    color: purple;
-    font-size: 25px;
-    padding: 20px;
-    border: 10px dotted green;
+
+  @keyframes shake {
+    0% { transform: translateX(-5px) rotate(-2deg); }
+    100% { transform: translateX(5px) rotate(2deg); }
+  }
+
+  button {
+    background: rainbow;
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, violet);
+    color: black;
+    font-size: 35px;
+    font-weight: bold;
+    padding: 25px 40px;
+    border: 15px groove purple;
     cursor: pointer;
-    width: 90%;
-    transform: skewX(15deg);
+    text-transform: uppercase;
+    animation: blink 0.6s infinite alternate;
   }
+
+  @keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0.3; }
+  }
+
   img {
     display: block;
-    margin: 50px auto;
-    border: 20px groove orange;
-    transform: rotate(10deg) scale(1.2);
-    filter: contrast(300%) saturate(300%);
+    margin: 40px auto;
+    border: 30px double red;
+    animation: dance 2s infinite linear;
+    filter: hue-rotate(180deg) contrast(200%);
+  }
+
+  @keyframes dance {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(15deg) scale(1.2); }
+    50% { transform: rotate(-15deg) scale(1); }
+    75% { transform: rotate(15deg) scale(1.1); }
+    100% { transform: rotate(0deg) scale(1); }
+  }
+
+  marquee {
+    font-size: 50px;
+    background: black;
+    color: lime;
+    padding: 20px;
+    border: 10px dashed yellow;
+    margin-top: 20px;
   }
 </style>
 </head>
 <body>
 
-<h1>🤡 ATAY LOW BUDGET SA RON, WA KO SA MOOD<br>PARA MAG DESIGN OG PAGE 😂</h1>
+<marquee behavior="alternate" scrollamount="15">🔥 WARNING: UGLIEST WEBSITE EVER 🔥</marquee>
+
+<h1>🤯 WA KO SA MOOD RON PARA MAG DESIGN OG PAGE. SENSYA NA 😂</h1>
 
 <h2>
   <a href="https://app.temu.com/ph-en/kuiper/un1.html?subj=feed-un&_bg_fs=1&_p_mat1_type=3&_p_jump_id=722&_x_vst_scene=adg&goods_id=601101201718631" target="_blank">
-    <button>👉 PINDUTA LANG NI PARA SA FREE POCO C61 😭</button>
+    <button>💩 PINDUTA NI PARA MAKUHA ANG FREE POCO C61 💩</button>
   </a>
 </h2>
 
-<img src="https://media.tenor.com/5Yi3hrIuVLIAAAAM/dog-funny.gif" alt="Funny Dog GIF" width="400">
+<img src="https://media.tenor.com/5Yi3hrIuVLIAAAAM/dog-funny.gif" width="450" alt="Funny Dog GIF">
+
+<marquee direction="right" scrollamount="25">🐶 WOOF WOOF 🐶 MURAG WALA NAG TUON ANG NAG HIMO ANI 🐶</marquee>
 
 </body>
 </html>
