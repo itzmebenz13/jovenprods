@@ -27,6 +27,7 @@
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #111111;
@@ -266,6 +267,107 @@
             background: linear-gradient(135deg, #4f46e5, #d97706);
         }
 
+        /* TEMU Generator Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            margin: 15% auto;
+            padding: 32px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(99, 102, 241, 0.1);
+            text-align: center;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            color: #6b7280;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            background: none;
+            border: none;
+        }
+
+        .modal-close:hover {
+            color: #374151;
+        }
+
+        .generator-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .generator-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .generator-btn {
+            width: 100%;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--secondary-color), #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .generator-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .generator-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         /* Loading Animation */
         .loading-overlay {
             position: fixed;
@@ -331,6 +433,10 @@
                     <a href="#skills" class="text-sm font-medium link-underline" aria-label="Skills section">Skills</a>
                     <a href="#projects" class="text-sm font-medium link-underline" aria-label="Projects section">Projects</a>
                     <a href="#contact" class="text-sm font-medium link-underline" aria-label="Contact section">Contact</a>
+                    <button id="temu-generator-btn" class="btn-secondary" aria-label="TEMU Gift Generator">
+                        <i data-feather="gift" class="h-4 w-4"></i>
+                        TEMU Generator
+                    </button>
                 </div>
                 <div class="md:hidden">
                     <button id="mobile-menu-button" class="text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 p-2 rounded-md" aria-label="Open mobile menu">
@@ -346,6 +452,10 @@
                 <a href="#skills" class="block py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">Skills</a>
                 <a href="#projects" class="block py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">Projects</a>
                 <a href="#contact" class="block py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">Contact</a>
+                <button id="temu-generator-mobile-btn" class="block w-full text-left py-3 px-4 text-sm hover:bg-gray-100 rounded-md transition-colors">
+                    <i data-feather="gift" class="h-4 w-4 inline mr-2"></i>
+                    TEMU Generator
+                </button>
             </div>
         </div>
     </header>
@@ -665,6 +775,54 @@
         </section>
     </main>
 
+    <!-- TEMU Generator Modal -->
+    <div id="temu-generator-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeTemuModal()">&times;</button>
+            
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-feather="gift" class="h-8 w-8 text-white"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">TEMU Gift Generator</h2>
+                <p class="text-gray-600">Generate optimized gift links from TEMU share URLs</p>
+            </div>
+
+            <form id="temu-generator-form" onsubmit="handleTemuGeneration(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label for="access-code" class="block text-sm font-medium text-gray-700 mb-2">Access Code</label>
+                        <input 
+                            type="text" 
+                            id="access-code" 
+                            placeholder="Enter access code"
+                            class="generator-input"
+                            required
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="temu-link" class="block text-sm font-medium text-gray-700 mb-2">TEMU Share Link</label>
+                        <input 
+                            type="url" 
+                            id="temu-link" 
+                            placeholder="https://share.temu.com/..."
+                            class="generator-input"
+                            required
+                        >
+                    </div>
+                </div>
+                
+                <button type="submit" id="generate-btn" class="generator-btn">
+                    <i data-feather="external-link" class="h-4 w-4 inline mr-2"></i>
+                    Generate & Open
+                </button>
+            </form>
+            
+            <div id="generator-message" class="mt-4 p-3 rounded-lg hidden"></div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-gray-50 border-t border-gray-200">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -932,6 +1090,152 @@
         window.addEventListener('error', (e) => {
             if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
                 console.warn('Failed to load external resource:', e.target.src || e.target.href);
+            }
+        });
+
+        // TEMU Generator Functions
+        function openTemuModal() {
+            const modal = document.getElementById('temu-generator-modal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            // Clear previous inputs
+            document.getElementById('access-code').value = '';
+            document.getElementById('temu-link').value = '';
+            hideGeneratorMessage();
+        }
+
+        function closeTemuModal() {
+            const modal = document.getElementById('temu-generator-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showGeneratorMessage(message, type = 'success') {
+            const messageDiv = document.getElementById('generator-message');
+            messageDiv.className = `mt-4 p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+            messageDiv.textContent = message;
+            messageDiv.classList.remove('hidden');
+        }
+
+        function hideGeneratorMessage() {
+            const messageDiv = document.getElementById('generator-message');
+            messageDiv.classList.add('hidden');
+        }
+
+        function extractGoodsId(url) {
+            // Extract goods_id from various TEMU URL formats
+            const patterns = [
+                /goods_id[=:](\d+)/i,
+                /product\/([^/?&]+)/i,
+                /\/(\d{15,})/,
+                /goods[_-]?id[=:]?(\d+)/i
+            ];
+
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    // If it's a product code, convert to goods_id format
+                    const value = match[1];
+                    if (value.length >= 15) {
+                        return value;
+                    }
+                }
+            }
+            return null;
+        }
+
+        async function handleTemuGeneration(event) {
+            event.preventDefault();
+            
+            const accessCode = document.getElementById('access-code').value.trim().toUpperCase();
+            const temuLink = document.getElementById('temu-link').value.trim();
+            const generateBtn = document.getElementById('generate-btn');
+            
+            // Validate access code
+            if (accessCode !== 'IDGAF2025') {
+                showGeneratorMessage('Invalid access code. Please enter the correct code.', 'error');
+                return;
+            }
+
+            // Validate TEMU link
+            if (!temuLink.includes('temu.com')) {
+                showGeneratorMessage('Please provide a valid TEMU share link.', 'error');
+                return;
+            }
+
+            // Disable button and show loading
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin h-4 w-4 inline mr-2"></i>Generating...';
+            hideGeneratorMessage();
+
+            try {
+                // Try to resolve redirects first
+                let finalUrl = temuLink;
+                
+                // Extract goods_id from the URL
+                let goodsId = extractGoodsId(finalUrl);
+                
+                if (!goodsId) {
+                    // If direct extraction fails, try to follow redirects
+                    try {
+                        const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(temuLink)}`);
+                        const data = await response.json();
+                        if (data.contents) {
+                            // Look for goods_id in the response
+                            const goodsIdMatch = data.contents.match(/goods_id[=:](\d+)/i);
+                            if (goodsIdMatch) {
+                                goodsId = goodsIdMatch[1];
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Redirect resolution failed, trying direct extraction...');
+                    }
+                }
+
+                if (!goodsId) {
+                    showGeneratorMessage('Could not extract product ID from the TEMU link. Please verify that you\'re using a valid TEMU product share link.', 'error');
+                    return;
+                }
+
+                // Generate the gift link
+                const baseUrl = "https://app.temu.com/ph-en/kuiper/un1.html?subj=feed-un&_bg_fs=1&_p_mat1_type=3&_p_jump_id=722&_x_vst_scene=adg&goods_id=";
+                const giftLink = baseUrl + goodsId;
+
+                // Show success message
+                showGeneratorMessage(`Gift link generated successfully! Opening in new tab...`, 'success');
+
+                // Open the gift link after a short delay
+                setTimeout(() => {
+                    window.open(giftLink, '_blank');
+                    closeTemuModal();
+                }, 1500);
+
+            } catch (error) {
+                console.error('Generation error:', error);
+                showGeneratorMessage('Network error occurred. Please try again.', 'error');
+            } finally {
+                // Re-enable button
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i data-feather="external-link" class="h-4 w-4 inline mr-2"></i>Generate & Open';
+                feather.replace();
+            }
+        }
+
+        // Add event listeners for TEMU generator buttons
+        document.getElementById('temu-generator-btn').addEventListener('click', openTemuModal);
+        document.getElementById('temu-generator-mobile-btn').addEventListener('click', openTemuModal);
+
+        // Close modal when clicking outside
+        document.getElementById('temu-generator-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeTemuModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTemuModal();
             }
         });
 
