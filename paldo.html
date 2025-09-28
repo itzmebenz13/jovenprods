@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-color: #0a0a0a;
+      --text-color: #ffffff;
+      --accent-color: #00ff88;
+      --secondary-accent: #ff0088;
+      --warning-color: #ffa500;
+      --modal-bg: rgba(0, 0, 0, 0.95);
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Orbitron', monospace;
+      background: linear-gradient(135deg, var(--bg-color) 0%, #1a1a2e 50%, #16213e 100%);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.1), transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(255, 0, 136, 0.1), transparent 50%);
+      pointer-events: none;
+      animation: pulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    /* Modal Styles - Full Screen */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--modal-bg);
+      display: none;
+      z-index: 1000;
+      animation: zoomIn 0.5s ease forwards;
+    }
+
+    .modal.show {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
+      border-bottom: 2px solid var(--accent-color);
+      font-size: 1.2rem;
+      color: var(--accent-color);
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(var(--accent-color), var(--secondary-accent), var(--accent-color));
+      opacity: 0.05;
+      animation: rotate 15s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .close {
+      cursor: pointer;
+      font-size: 2rem;
+      color: var(--accent-color);
+      transition: var(--transition);
+      padding: 0.5rem;
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close:hover {
+      color: var(--secondary-accent);
+      background: rgba(255, 0, 136, 0.1);
+      transform: rotate(90deg);
+    }
+
+    .simulation-status {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .status-item.active {
+      border-color: var(--accent-color);
+      background: rgba(0, 255, 136, 0.1);
+    }
+
+    .status-item.active i {
+      animation: statusBlink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes statusBlink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.3; }
+    }
+
+    /* Enhanced Spinner */
+    .spinner {
+      border: 4px solid rgba(0, 255, 136, 0.1);
+      border-top: 4px solid var(--accent-color);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 0.8s linear infinite;
+      margin: 2rem auto;
+      display: none;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Content container for iframe and overlays */
+    .content-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Enhanced iframe */
+    iframe {
+      width: 100%;
+      flex: 1;
+      border: none;
+      background: #fff;
+      transition: var(--transition);
+    }
+
+    iframe.loading {
+      opacity: 0.7;
+      filter: blur(2px);
+    }
+
+    /* Interaction overlay for visual effects */
+    .interaction-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Simulated cursor */
+    .sim-cursor {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      transform: translate(-10px, -10px);
+      opacity: 0;
+      box-shadow: 0 0 10px var(--accent-color);
+      z-index: 10;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.6, 1);
+    }
+
+    .sim-cursor.active {
+      opacity: 0.8;
+    }
+
+    .sim-cursor.clicking {
+      transform: translate(-10px, -10px) scale(0.7);
+      background: var(--secondary-accent);
+      box-shadow: 0 0 15px var(--secondary-accent);
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 30px;
+      height: 100px;
+      background: rgba(0, 255, 136, 0.1);
+      border: 2px solid var(--accent-color);
+      border-radius: 15px;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .scroll-indicator.active {
+      opacity: 1;
+    }
+
+    .scroll-thumb {
+      width: 100%;
+      height: 20px;
+      background: var(--accent-color);
+      border-radius: 10px;
+      transition: all 0.5s ease;
+    }
+
+    /* Activity log */
+    .activity-log {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid var(--accent-color);
+      border-radius: 8px;
+      padding: 0.5rem;
+      max-width: 300px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: var(--transition);
+      font-size: 0.8rem;
+    }
+
+    .activity-log.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.2rem 0;
+      color: var(--accent-color);
+    }
+
+    /* Error message styling */
+    .error-message {
+      display: none;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
+    }
+
+    .error-content {
+      max-width: 500px;
+    }
+
+    .error-content h3 {
+      color: var(--secondary-accent);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .error-content p {
+      color: var(--text-color);
+      opacity: 0.8;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Enhanced Navigation Controls */
+    .nav-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(22, 33, 62, 0.9));
+      border-top: 2px solid var(--accent-color);
+      position: relative;
+      flex-wrap: wrap;
+    }
+
+    .nav-buttons::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.05), transparent);
+      animation: scan 3s ease-in-out infinite;
+    }
+
+    @keyframes scan {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+    }
+
+    .btn {
+      background: linear-gradient(45deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.3));
+      border: 2px solid var(--accent-color);
+      color: var(--text-color);
+      padding: 0.6rem 0.8rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem;
+      font-weight: 400;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      min-width: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      text-decoration: none;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: var(--transition);
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+      border-color: var(--secondary-accent);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .go-btn {
+      background: linear-gradient(45deg, rgba(255, 0, 136, 0.2), rgba(255, 0, 136, 0.4));
+      border-color: var(--secondary-accent);
+      font-weight: 700;
+    }
+
+    .go-btn:hover {
+      box-shadow: 0 8px 25px rgba(255, 0, 136, 0.4);
+    }
+
+    .human-btn {
+      background: linear-gradient(45deg, rgba(255, 165, 0, 0.2), rgba(255, 165, 0, 0.4));
+      border-color: var(--warning-color);
+    }
+
+    .human-btn:hover {
+      box-shadow: 0 8px 25px rgba(255, 165, 0, 0.4);
+    }
+
+    .human-btn.active {
+      background: linear-gradient(45deg, rgba(255, 165, 0, 0.4), rgba(255, 165, 0, 0.6));
+      box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+    }
+
+    /* Site Info Display */
+    .site-info {
+      position: absolute;
+      top: 50%;
+      left: 1rem;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      border: 1px solid var(--accent-color);
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: var(--transition);
+      max-width: 200px;
+      word-break: break-word;
+    }
+
+    .nav-buttons:hover .site-info {
+      opacity: 1;
+    }
+
+    /* Fallback Styles */
+    .fallback {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: rgba(26, 26, 46, 0.5);
+      border-radius: var(--border-radius);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      backdrop-filter: blur(10px);
+      max-width: 500px;
+      margin: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fallback p {
+      margin-bottom: 2rem;
+      font-size: 1.2rem;
+      opacity: 0.9;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .show-modal-btn {
+      background: linear-gradient(45deg, var(--accent-color), var(--secondary-accent));
+      border: none;
+      color: var(--bg-color);
+      padding: 1rem 2rem;
+      border-radius: var(--border-radius);
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 1.1rem;
+    }
+
+    .show-modal-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0, 255, 136, 0.4);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .modal-header {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .simulation-status {
+        font-size: 0.8rem;
+        gap: 0.5rem;
+      }
+
+      .nav-buttons {
+        padding: 0.75rem 1rem;
+        gap: 0.5rem;
+      }
+
+      .btn {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.75rem;
+        min-width: 40px;
+      }
+
+      .site-info {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="modal" id="myModal">
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span><i class="fas fa-robot"></i> Human Simulator</span>
+        <div class="simulation-status">
+          <div class="status-item" id="scrollStatus">
+            <i class="fas fa-scroll"></i>
+            <span>Scroll</span>
+          </div>
+          <div class="status-item" id="clickStatus">
+            <i class="fas fa-mouse-pointer"></i>
+            <span>Click</span>
+          </div>
+          <div class="status-item" id="moveStatus">
+            <i class="fas fa-mouse"></i>
+            <span>Move</span>
+          </div>
+        </div>
+      </div>
+      <span class="close" onclick="closeModal()" title="Close Portal">×</span>
+    </div>
+    <div class="spinner" id="spinner"></div>
+
+    <div class="content-container">
+      <iframe
+        id="modalIframe"
+        src=""
+        sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
+        title="Portal Content">
+      </iframe>
+
+      <div class="interaction-overlay" id="interactionOverlay">
+        <div class="sim-cursor" id="simCursor"></div>
+        <div class="scroll-indicator" id="scrollIndicator">
+          <div class="scroll-thumb" id="scrollThumb"></div>
+        </div>
+        <div class="activity-log" id="activityLog"></div>
+      </div>
+
+      <div class="error-message" id="errorMessage">
+        <div class="error-content">
+          <h3>
+            <i class="fas fa-shield-alt"></i>
+            Site Protection Active
+          </h3>
+          <p>This website prevents embedding for security reasons.</p>
+          <div class="error-actions">
+            <button class="btn go-btn" onclick="goToSite()">
+              <i class="fas fa-external-link-alt"></i> Open Site
+            </button>
+            <button class="btn" onclick="navigate(1)">
+              <i class="fas fa-forward"></i> Next Site
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <div class="site-info" id="siteInfo">
+        <i class="fas fa-link"></i> <span id="currentSite">Loading...</span>
+        <br><small>active</small>
+      </div>
+      <button class="btn" onclick="navigate(-1)" title="Previous Site">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="btn go-btn" onclick="goToSite()" title="Open in New Tab">
+        <i class="fas fa-external-link-alt"></i> Go
+      </button>
+      <button class="btn" onclick="navigate(1)" title="Next Site">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+      <button class="btn human-btn" onclick="toggleHumanSimulation()" title="Toggle Human Simulation" id="humanBtn">
+        <i class="fas fa-user" id="humanIcon"></i>
+        <span id="humanText">Human</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="fallback" id="fallback">
+    <p><i class="fas fa-magic"></i> Advanced portal with human behavior simulation!</p>
+    <button class="show-modal-btn" onclick="reopenModal()">
+      <i class="fas fa-eye"></i> Enter Portal
+    </button>
+  </div>
+
+  <script>
+    let links = [
+      'https://www.revenuecpmgate.com/q4j4jgki4n?key=ac6da8a54051aa4720b7b0a1de3fff0c',
+      'https://www.revenuecpmgate.com/rdvjamrk5?key=2575361908f53ec22a7bdf7f56d8b8ad'
+    ];
+
+    let currentIndex = 0;
+    let autoNavigateInterval;
+    let isLoading = false;
+    let humanSimulationEnabled = true;
+    let simulationInterval;
+    let activityTimeout;
+
+    let scrollPosition = 0;
+    let lastActivity = Date.now();
+    let activities = [];
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function updateSiteInfo() {
+      const siteInfo = document.getElementById('currentSite');
+      const currentSite = links[currentIndex];
+      try {
+        const url = new URL(currentSite);
+        siteInfo.textContent = url.hostname;
+      } catch {
+        siteInfo.textContent = currentSite;
+      }
+    }
+
+    function logActivity(type, description) {
+      activities.unshift({
+        type: type,
+        description: description,
+        timestamp: Date.now()
+      });
+
+      // Keep only last 5 activities
+      if (activities.length > 5) {
+        activities = activities.slice(0, 5);
+      }
+
+      updateActivityLog();
+    }
+
+    function updateActivityLog() {
+      const activityLog = document.getElementById('activityLog');
+      const now = Date.now();
+
+      activityLog.innerHTML = activities.map(activity => {
+        const timeAgo = Math.floor((now - activity.timestamp) / 1000);
+        return `<div class="activity-item">
+          <i class="fas fa-${getActivityIcon(activity.type)}"></i>
+          <span>${activity.description} (${timeAgo}s ago)</span>
+        </div>`;
+      }).join('');
+
+      if (activities.length > 0) {
+        activityLog.classList.add('show');
+        clearTimeout(activityTimeout);
+        activityTimeout = setTimeout(() => {
+          activityLog.classList.remove('show');
+        }, 5000);
+      }
+    }
+
+    function getActivityIcon(type) {
+      const icons = {
+        scroll: 'scroll',
+        click: 'mouse-pointer',
+        move: 'mouse',
+        hover: 'hand-pointer',
+        rightclick: 'context-menu'
+      };
+      return icons[type] || 'circle';
+    }
+
+    function simulateScrolling() {
+      if (!humanSimulationEnabled) return;
+
+      const scrollIndicator = document.getElementById('scrollIndicator');
+      const scrollThumb = document.getElementById('scrollThumb');
+      const scrollStatus = document.getElementById('scrollStatus');
+
+      scrollIndicator.classList.add('active');
+      scrollStatus.classList.add('active');
+
+      // Simulate natural scrolling pattern
+      const scrollAmount = Math.random() * 80 + 10; // 10-90%
+      scrollPosition = Math.min(scrollPosition + scrollAmount, 100);
+
+      if (scrollPosition >= 90) {
+        scrollPosition = 0; // Reset to top
+      }
+
+      scrollThumb.style.transform = `translateY(${scrollPosition * 0.8}px)`;
+
+      logActivity('scroll', `Scrolled to ${Math.floor(scrollPosition)}%`);
+
+      setTimeout(() => {
+        scrollIndicator.classList.remove('active');
+        scrollStatus.classList.remove('active');
+      }, 2000);
+    }
+
+    function simulateMouseMovement() {
+      if (!humanSimulationEnabled) return;
+
+      const cursor = document.getElementById('simCursor');
+      const moveStatus = document.getElementById('moveStatus');
+      const overlay = document.getElementById('interactionOverlay');
+
+      // Get random position within iframe area
+      const rect = overlay.getBoundingClientRect();
+      const x = Math.random() * (rect.width - 40) + 20;
+      const y = Math.random() * (rect.height - 40) + 20;
+
+      cursor.classList.add('active');
+      moveStatus.classList.add('active');
+      cursor.style.left = x + 'px';
+      cursor.style.top = y + 'px';
+
+      logActivity('move', `Mouse moved to (${Math.floor(x)}, ${Math.floor(y)})`);
+
+      setTimeout(() => {
+        cursor.classList.remove('active');
+        moveStatus.classList.remove('active');
+      }, 3000);
+    }
+
+    function simulateClick() {
+      if (!humanSimulationEnabled) return;
+
+      const cursor = document.getElementById('simCursor');
+      const clickStatus = document.getElementById('clickStatus');
+
+      // First move cursor to click position
+      simulateMouseMovement();
+
+      setTimeout(() => {
+        cursor.classList.add('clicking');
+        clickStatus.classList.add('active');
+
+        logActivity('click', 'Left clicked at cursor position');
+
+        setTimeout(() => {
+          cursor.classList.remove('clicking');
+          clickStatus.classList.remove('active');
+        }, 500);
+      }, 1000);
+    }
+
+    function simulateRightClick() {
+      if (!humanSimulationEnabled) return;
+
+      simulateMouseMovement();
+
+      setTimeout(() => {
+        const cursor = document.getElementById('simCursor');
+        cursor.style.background = 'var(--warning-color)';
+        cursor.style.boxShadow = '0 0 15px var(--warning-color)';
+
+        logActivity('rightclick', 'Right clicked (context menu)');
+
+        setTimeout(() => {
+          cursor.style.background = 'var(--accent-color)';
+          cursor.style.boxShadow = '0 0 10px var(--accent-color)';
+        }, 1000);
+      }, 1000);
+    }
+
+    function simulateHumanBehavior() {
+      if (!humanSimulationEnabled) return;
+
+      const actions = [
+        { action: simulateScrolling, weight: 40 },
+        { action: simulateMouseMovement, weight: 30 },
+        { action: simulateClick, weight: 20 },
+        { action: simulateRightClick, weight: 10 }
+      ];
+
+      // Weighted random selection
+      const totalWeight = actions.reduce((sum, item) => sum + item.weight, 0);
+      let random = Math.random() * totalWeight;
+
+      for (const item of actions) {
+        if (random < item.weight) {
+          item.action();
+          break;
+        }
+        random -= item.weight;
+      }
+    }
+
+    function startHumanSimulation() {
+      if (simulationInterval) {
+        clearInterval(simulationInterval);
+      }
+
+      simulationInterval = setInterval(() => {
+        simulateHumanBehavior();
+      }, Math.random() * 8000 + 3000); // 3-11 seconds
+    }
+
+    function stopHumanSimulation() {
+      if (simulationInterval) {
+        clearInterval(simulationInterval);
+        simulationInterval = null;
+      }
+
+      // Hide all simulation elements
+      document.getElementById('simCursor').classList.remove('active');
+      document.getElementById('scrollIndicator').classList.remove('active');
+      document.getElementById('activityLog').classList.remove('show');
+
+      // Reset status indicators
+      document.querySelectorAll('.status-item').forEach(item => {
+        item.classList.remove('active');
+      });
+    }
+
+    function toggleHumanSimulation() {
+      humanSimulationEnabled = !humanSimulationEnabled;
+      const btn = document.getElementById('humanBtn');
+      const icon = document.getElementById('humanIcon');
+      const text = document.getElementById('humanText');
+
+      if (humanSimulationEnabled) {
+        btn.classList.add('active');
+        icon.className = 'fas fa-user';
+        text.textContent = 'Human';
+        startHumanSimulation();
+        logActivity('system', 'Human simulation enabled');
+      } else {
+        btn.classList.remove('active');
+        icon.className = 'fas fa-user-slash';
+        text.textContent = 'Manual';
+        stopHumanSimulation();
+        logActivity('system', 'Human simulation disabled');
+      }
+    }
+
+    function showError() {
+      const iframe = document.getElementById('modalIframe');
+      const errorMessage = document.getElementById('errorMessage');
+      const spinner = document.getElementById('spinner');
+
+      iframe.style.display = 'none';
+      errorMessage.style.display = 'flex';
+      spinner.style.display = 'none';
+      isLoading = false;
+      stopHumanSimulation();
+    }
+
+    function hideError() {
+      const iframe = document.getElementById('modalIframe');
+      const errorMessage = document.getElementById('errorMessage');
+
+      iframe.style.display = 'block';
+      errorMessage.style.display = 'none';
+    }
+
+    function showLink(index) {
+      if (isLoading) return;
+
+      const iframe = document.getElementById('modalIframe');
+      const modal = document.getElementById('myModal');
+      const spinner = document.getElementById('spinner');
+
+      isLoading = true;
+      hideError();
+      iframe.classList.add('loading');
+      spinner.style.display = 'block';
+
+      updateSiteInfo();
+
+      iframe.src = '';
+
+      setTimeout(() => {
+        iframe.src = links[index];
+        modal.classList.add('show');
+      }, 200);
+
+      iframe.onload = () => {
+        spinner.style.display = 'none';
+        iframe.classList.remove('loading');
+        isLoading = false;
+
+        if (humanSimulationEnabled) {
+          startHumanSimulation();
+        }
+
+        logActivity('system', `Loaded ${links[index]}`);
+      };
+
+      iframe.onerror = () => {
+        showError();
+      };
+
+      const timeoutId = setTimeout(() => {
+        if (isLoading) {
+          showError();
+        }
+      }, 8000);
+
+      iframe.addEventListener('load', () => {
+        clearTimeout(timeoutId);
+      }, { once: true });
+
+      clearInterval(autoNavigateInterval);
+      autoNavigateInterval = setInterval(() => {
+        navigate(1);
+      }, Math.floor(Math.random() * (60000 - 30000 + 1) + 30000)); // 30-60 seconds
+    }
+
+    function navigate(direction) {
+      if (isLoading) return;
+
+      currentIndex = (currentIndex + direction + links.length) % links.length;
+      showLink(currentIndex);
+    }
+
+    function goToSite() {
+      try {
+        window.open(links[currentIndex], '_blank', 'noopener,noreferrer');
+      } catch (error) {
+        window.location.href = links[currentIndex];
+      }
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('myModal');
+      const iframe = document.getElementById('modalIframe');
+      const fallback = document.getElementById('fallback');
+
+      stopHumanSimulation();
+
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        iframe.src = '';
+        fallback.style.display = 'flex';
+        hideError();
+      }, 300);
+
+      clearInterval(autoNavigateInterval);
+      isLoading = false;
+    }
+
+    function reopenModal() {
+      document.getElementById('fallback').style.display = 'none';
+      showLink(currentIndex);
+    }
+
+    // Enhanced keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (isLoading) return;
+
+      const modal = document.getElementById('myModal');
+      const isModalOpen = modal.classList.contains('show');
+
+      if (!isModalOpen) return;
+
+      switch(e.key) {
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          e.preventDefault();
+          navigate(-1);
+          break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          e.preventDefault();
+          navigate(1);
+          break;
+        case 'Enter':
+        case ' ':
+          e.preventDefault();
+          goToSite();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          closeModal();
+          break;
+        case 'h':
+        case 'H':
+          e.preventDefault();
+          toggleHumanSimulation();
+          break;
+        case 's':
+        case 'S':
+          e.preventDefault();
+          simulateScrolling();
+          break;
+        case 'c':
+        case 'C':
+          e.preventDefault();
+          simulateClick();
+          break;
+        case 'm':
+        case 'M':
+          e.preventDefault();
+          simulateMouseMovement();
+          break;
+      }
+    });
+
+    window.onload = function () {
+      shuffleArray(links);
+      showLink(currentIndex);
+    };
+  </script>
+</body>
+</html>
